@@ -56,7 +56,14 @@ export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
               <td className="px-4 py-2">{user.email}</td>
               <td className="px-4 py-2">{user.role}</td>
               <td className="px-4 py-2">
-                {new Date(user.createdAt).toLocaleString()}
+                {new Date(user.createdAt).toLocaleString('en-GB', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                })}
               </td>
               <td className="px-4 py-2 text-right space-x-2">
                 <button
