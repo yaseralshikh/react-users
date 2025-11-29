@@ -7,7 +7,7 @@ import {
   createUser,
   updateUser,
   deleteUser,
-} from "../api/users";
+} from "../../api/users";
 import { UserTable } from "../components/UserTable";
 import { UserForm } from "../components/UserForm";
 
@@ -29,8 +29,9 @@ export function UsersPage() {
   // Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<"success" | "error" | "info" | "warning">("info");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
 
   const showSnackbar = (
     message: string,
@@ -202,8 +203,8 @@ export function UsersPage() {
           </h2>
 
           <p style={{ fontSize: "15px", color: "#555", marginBottom: "12px" }}>
-            Are you sure you want to delete user{" "}
-            <b>{userToDelete?.name}</b>? This action cannot be undone.
+            Are you sure you want to delete user <b>{userToDelete?.name}</b>?
+            This action cannot be undone.
           </p>
         </DialogContent>
 
@@ -258,7 +259,7 @@ export function UsersPage() {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleSnackbarClose}

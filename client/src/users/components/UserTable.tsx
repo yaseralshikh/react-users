@@ -1,4 +1,4 @@
-import type { User } from "../api/users";
+import type { User } from "../../api/users";
 
 interface UserTableProps {
   users: User[];
@@ -10,15 +10,17 @@ export function UserTable({ users, onEdit, onDelete }: UserTableProps) {
   if (users.length === 0) {
     return (
       <p className="text-sm text-slate-500 dark:text-slate-300">
-        No users yet. Click{" "}
-        <span className="font-semibold">Add User</span> to create the first one.
+        No users yet. Click <span className="font-semibold">Add User</span> to
+        create the first one.
       </p>
     );
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden 
-                    dark:bg-slate-900 dark:border-slate-700">
+    <div
+      className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden 
+                    dark:bg-slate-900 dark:border-slate-700"
+    >
       <table className="w-full border-collapse text-sm text-slate-800 dark:text-slate-100">
         <thead className="bg-slate-50 dark:bg-slate-800/70">
           <tr>

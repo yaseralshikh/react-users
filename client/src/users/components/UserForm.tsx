@@ -1,6 +1,6 @@
 // src/components/UserForm.tsx
 import { type FormEvent, useState, useEffect } from "react";
-import type { Role, User, UserInput } from "../api/users";
+import type { Role, User, UserInput } from "../../api/users";
 
 interface UserFormProps {
   mode: "create" | "edit";
@@ -59,9 +59,7 @@ export function UserForm({
 
   return (
     <form onSubmit={handleSubmit} className="mt-2 space-y-3 min-w-[320px]">
-      {error && (
-        <p className="text-sm text-red-500 mb-1">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-500 mb-1">{error}</p>}
 
       <div className="space-y-1">
         <label className="text-xs font-medium text-slate-600 dark:text-slate-300">
@@ -120,11 +118,7 @@ export function UserForm({
           disabled={submitting}
           className="rounded bg-primary-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-primary-700 disabled:opacity-70"
         >
-          {submitting
-            ? "Saving..."
-            : mode === "create"
-            ? "Create"
-            : "Update"}
+          {submitting ? "Saving..." : mode === "create" ? "Create" : "Update"}
         </button>
       </div>
     </form>
