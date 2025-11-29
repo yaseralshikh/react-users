@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+// src/pages/UsersPage.tsx
+import { useEffect, useState, type ChangeEvent } from "react";
 import {
   type User,
   type UserInput,
@@ -23,22 +24,24 @@ export function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] =
     useState<"success" | "error" | "info" | "warning">("info");
 
-  function showSnackbar(message: string, severity: "success" | "error" | "info" | "warning") {
+  const showSnackbar = (
+    message: string,
+    severity: "success" | "error" | "info" | "warning"
+  ) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
-  }
+  };
   const handleSnackbarClose = () => setSnackbarOpen(false);
 
-  // ---------------------------
-  // تحميل المستخدمين
-  // ---------------------------
   useEffect(() => {
     loadUsers();
   }, []);
@@ -50,8 +53,9 @@ export function UsersPage() {
       setUsers(data);
     } catch (err: any) {
       showSnackbar(err.message || "Failed to load users", "error");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleCreateUser(input: UserInput) {
@@ -67,9 +71,7 @@ export function UsersPage() {
     showSnackbar("User updated successfully", "success");
   }
 
-  // ---------------------------
-  // Delete Warning Dialog
-  // ---------------------------
+  // Delete dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
@@ -95,9 +97,7 @@ export function UsersPage() {
     }
   }
 
-  // ---------------------------
-  // User Form Dialog (Create / Edit)
-  // ---------------------------
+  // Form dialog
   const [formDialogOpen, setFormDialogOpen] = useState(false);
 
   function openCreateDialog() {
@@ -124,21 +124,55 @@ export function UsersPage() {
     closeFormDialog();
   }
 
-  return (
-    <div>
-      <h2>Users</h2>
+  // Search filter
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
-      <div style={{ marginBottom: "1rem" }}>
-        <Button variant="contained" onClick={openCreateDialog}>
-          Add User
-        </Button>
+  const filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      user.name.toLowerCase().includes(term) ||
+      user.email.toLowerCase().includes(term)
+    );
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+            Users
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Manage your users (create, edit, delete) using the API-backed table.
+          </p>
+        </div>
+
+        {/* Search + Add User alignment */}
+        <div className="flex w-full gap-2 sm:w-auto sm:min-w-[320px]">
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="flex-1 rounded border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"
+          />
+          <Button
+            variant="contained"
+            onClick={openCreateDialog}
+            className="!text-xs !normal-case !bg-primary-600 hover:!bg-primary-700"
+          >
+            Add User
+          </Button>
+        </div>
       </div>
 
       {loading ? (
-        <p>Loading users...</p>
+        <p className="text-sm text-slate-500">Loading users...</p>
       ) : (
         <UserTable
-          users={users}
+          users={filteredUsers}
           onEdit={openEditDialog}
           onDelete={openDeleteDialog}
         />
@@ -156,16 +190,9 @@ export function UsersPage() {
           },
         }}
       >
-        <DialogContent
-          sx={{ textAlign: "center", paddingBottom: 0 }}
-        >
+        <DialogContent sx={{ textAlign: "center", paddingBottom: 0 }}>
           <div style={{ marginBottom: "12px" }}>
-            <svg
-              width="48"
-              height="48"
-              fill="#f44336"
-              viewBox="0 0 24 24"
-            >
+            <svg width="48" height="48" fill="#f44336" viewBox="0 0 24 24">
               <path d="M1 21h22L12 2 1 21zm12-3h-2v2h2v-2zm0-8h-2v6h2v-6z" />
             </svg>
           </div>
@@ -200,20 +227,20 @@ export function UsersPage() {
         </DialogActions>
       </Dialog>
 
-      {/* USER FORM DIALOG */}
+      {/* USER FORM DIALOG - Modal متناسق */}
       <Dialog
         open={formDialogOpen}
         onClose={closeFormDialog}
+        fullWidth
+        maxWidth="sm"
         PaperProps={{
           sx: {
-            paddingX: 2,
+            borderRadius: 3,
             paddingY: 1,
-            borderRadius: 2,
-            minWidth: "420px",
           },
         }}
       >
-        <DialogTitle>
+        <DialogTitle className="text-base font-semibold text-slate-800">
           {editingUser ? "Edit User" : "Create New User"}
         </DialogTitle>
         <DialogContent>
@@ -231,7 +258,7 @@ export function UsersPage() {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert
           onClose={handleSnackbarClose}
