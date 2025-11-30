@@ -1,8 +1,9 @@
-import { inngestHandler } from "./inngest/handler";
 import express from "express";
 import cors from "cors";
+
 import { prisma } from "./lib/prisma";
 import usersRouter from "./routes/users";
+import { inngestHandler } from "./inngest/handler"; // 👈 فقط هذا من inngest
 
 const app = express();
 

@@ -3,17 +3,14 @@ import { inngest } from "../client";
 
 export const userCreatedFn = inngest.createFunction(
   { id: "user-created-logger" },
-  { event: "user/created" },
+  { event: "user/created" }, // 👈 نفس اسم الـ event اللي يظهر في UI
   async ({ event, step }) => {
+    const user = event.data.user;
+
     await step.run("log-user-created", async () => {
-      console.log("[Inngest Function] user/created event received:", {
-        id: event.data.user.id,
-        name: event.data.user.name,
-        email: event.data.user.email,
-        role: event.data.user.role,
-      });
+      console.log("👋 Inngest function triggered for user:", user);
     });
 
-    return { success: true };
+    return { ok: true };
   }
 );

@@ -2,12 +2,14 @@
 import { Inngest } from "inngest";
 
 export const inngest = new Inngest({
-  id: "react-users-app", // اسم تطبيقك في Inngest (يمكن تغييره لاحقًا)
+  id: "react-users-app",
 });
+
+const EVENT_KEY = process.env.INNGEST_EVENT_KEY;
 
 /**
  * دالة مساعدة لإرسال حدث user/created
- * إذا لم يكن INNGEST_EVENT_KEY موجود في .env نكتفي بـ console.log
+ * في وضع التطوير (بدون Event Key حقيقي) سنكتفي بالـ console.log
  */
 export async function sendUserCreatedEvent(user: {
   id: number | string;
@@ -15,11 +17,9 @@ export async function sendUserCreatedEvent(user: {
   email: string;
   role: string;
 }) {
-  if (!process.env.INNGEST_EVENT_KEY) {
-    console.log(
-      "[Inngest] INNGEST_EVENT_KEY not set; skipping send. User:",
-      user
-    );
+  // إذا لا يوجد مفتاح حقيقي، نطبع فقط ولا نرسل لأي مكان
+  if (!EVENT_KEY || EVENT_KEY === "dev-local-key") {
+    console.log("[Inngest DEV] Simulating user/created event:", user);
     return;
   }
 
