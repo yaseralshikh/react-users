@@ -11,6 +11,6 @@ export const userCreatedFn = inngest.createFunction(
       console.log("👋 Inngest function triggered for user:", user);
     });
 
-    return { ok: true };
+    return { ok: true, messge: "User creation logged"};
   }
 );

@@ -1,4 +1,4 @@
-import { sendUserCreatedEvent } from "../inngest/client";
+import { sendUserCreatedEvent, sendUserUpdatedEvent, sendUserDeletedEvent } from "../inngest/client";
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 
@@ -128,6 +128,14 @@ router.put("/:id", async (req: Request, res: Response) => {
       data: updateData,
     });
 
+    // إرسال حدث user/updated إلى Inngest
+    await sendUserUpdatedEvent({
+      id: user.id,  
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+
     res.json(user);
   } catch (error: any) {
     console.error("PUT /api/users/:id error:", error);
@@ -158,6 +166,14 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await prisma.user.delete({
       where: { id },
+    });
+
+    // إرسال حدث user/deleted إلى Inngest
+    await sendUserDeletedEvent({
+      id,
+      name: "",  // لا حاجة لتفاصيل إضافية عند الحذف
+      email: "",
+      role: "USER",
     });
 
     // 204 No Content is common; هنا نعيد رسالة بسيطة ليسهل الاختبار
