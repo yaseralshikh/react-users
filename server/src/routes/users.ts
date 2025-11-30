@@ -1,3 +1,4 @@
+import { sendUserCreatedEvent } from "../inngest/client";
 import express, { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
 
@@ -72,6 +73,15 @@ router.post("/", async (req: Request, res: Response) => {
         role: finalRole,
       },
     });
+
+    // إرسال حدث user/created إلى Inngest
+    await sendUserCreatedEvent({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+
 
     res.status(201).json(user);
   } catch (error: any) {

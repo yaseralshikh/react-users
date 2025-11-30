@@ -1,3 +1,4 @@
+import { inngestHandler } from "./inngest/handler";
 import express from "express";
 import cors from "cors";
 import { prisma } from "./lib/prisma";
@@ -32,6 +33,9 @@ app.get("/test-prisma", async (_req, res) => {
 
 // Mount users API
 app.use("/api/users", usersRouter);
+
+// Endpoint خاص بـ Inngest (سيستخدم لاحقًا بواسطة Inngest Dev Server أو Inngest Cloud)
+app.use("/api/inngest", inngestHandler);
 
 const PORT = process.env.PORT || 4000;
 
